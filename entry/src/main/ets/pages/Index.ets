@@ -1,5 +1,4 @@
 
-import {axios} from '../utils/http'
 import Home from './Home';
 import Personal from './Personal';
 import Trend from './Trend';
@@ -8,9 +7,6 @@ import Trend from './Trend';
 @Component
 struct Index {
   @State currentIndex: number = 0;
-  // axios.get(url:'www.baidu.com').then(data => console.log(data))
-
-
   @Builder
   TabBuilder(image: string, activeImage: string, text: string| Resource, index: number) {
     Column() {
@@ -25,20 +21,19 @@ struct Index {
     // 采用相对布局
     RelativeContainer(){
       Tabs({barPosition:BarPosition.End, index:this.currentIndex}){
+        // 首页
         TabContent(){
-          if (this.currentIndex == 0){
             Home()
-          }
         }.tabBar(this.TabBuilder('󰀥', '󰀡', $r('app.string.Home'), 0))
+
+        // 动态
         TabContent(){
-          if (this.currentIndex == 1){
             Trend()
-          }
         }.tabBar(this.TabBuilder('󰗷', '󰗷', $r('app.string.dynamic'), 1))
+
+        // 个人中心
         TabContent(){
-          if (this.currentIndex == 2){
             Personal()
-          }
         }.tabBar(this.TabBuilder('󰝵', '󰝴', $r('app.string.personal'), 2))
       }.onChange((val) => {
         this.currentIndex = val

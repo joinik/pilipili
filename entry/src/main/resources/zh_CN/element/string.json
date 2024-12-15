@@ -19,6 +19,10 @@
     {
       "name": "personal",
       "value": "个人"
+    },
+    {
+      "name": "dynamic",
+      "value": "动态"
     }
   ]
 }

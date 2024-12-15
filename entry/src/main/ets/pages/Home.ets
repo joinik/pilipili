@@ -1,11 +1,10 @@
-import {MyTabContent} from "../components/home/MyTabContent";
-import SearchCP from "../components/SearchCP";
+import {MyTabContent} from "./components/home/MyTabContent";
+import SearchCP from "./components/SearchCP";
 
 @Component
 export default struct Home {
   @State message: string = '首页';
   @State currentIndex: number = 1;
-
   @Builder
   TabBuilder(text: string | Resource, index: number) {
     Column() {
@@ -23,27 +22,21 @@ export default struct Home {
       // tab页
       Tabs() {
         TabContent() {
-          if (this.currentIndex == 0) {
             MyTabContent({ flagIndex: 0 })
-          }
         }.tabBar(this.TabBuilder('直播', 0))
 
         TabContent() {
-          if (this.currentIndex == 1) {
             MyTabContent({ flagIndex: 1 })
-          }
+
         }.tabBar(this.TabBuilder('推荐', 1))
 
         TabContent() {
-          if (this.currentIndex == 2) {
             MyTabContent({ flagIndex: 2 })
-          }
+
         }.tabBar(this.TabBuilder('热门', 2))
 
         TabContent() {
-          if (this.currentIndex == 3) {
             MyTabContent({ flagIndex: 3 })
-          }
         }.tabBar(this.TabBuilder('番剧', 3))
       }
       .onChange((val) => {
