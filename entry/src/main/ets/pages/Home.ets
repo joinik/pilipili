@@ -3,7 +3,6 @@ import SearchCP from "./components/SearchCP";
 
 @Component
 export default struct Home {
-  @State message: string = '首页';
   @State currentIndex: number = 1;
   @Builder
   TabBuilder(text: string | Resource, index: number) {

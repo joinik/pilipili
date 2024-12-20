@@ -24,7 +24,12 @@ export struct OfflinePage {
         Column() {
           Text('重试').fontColor('#f04142')
         }
-        .padding({ top: 8, right: 20, bottom: 8, left: 20 })
+        .padding({
+          top: 8,
+          right: 20,
+          bottom: 8,
+          left: 20
+        })
         .border({ width: 1, color: '#f04142' })
         .borderRadius(8)
         .onClick(() => {

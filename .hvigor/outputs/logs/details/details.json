@@ -3,7 +3,10 @@
     "MODULES": [
       {
         "MODULE_NAME": "1043bfc77febe75fafec0c4309faccf1",
-        "API_TYPE": "stageMode"
+        "API_TYPE": "stageMode",
+        "INCREMENTAL_TASKS": {
+          "COMPILE_ARKTS": true
+        }
       }
     ],
     "BUILD_MODE": "debug"
@@ -15,20 +18,21 @@
     "IS_HVIGORFILE_TYPE_CHECK": false,
     "TASK_TIME": {
       "1043bfc77febe75fafec0c4309faccf1": {
-        "PreCheckSyscap": 132875,
-        "GeneratePkgContextInfo": 152833,
-        "PreviewProcessResource": 983250,
-        "PreviewCompileResource": 96978667,
-        "PreviewHookCompileResource": 117000,
-        "CopyPreviewProfile": 1254250,
-        "ReplacePreviewerPage": 1208292,
-        "buildPreviewerResource": 171667,
-        "PreviewUpdateAssets": 931584,
-        "PreviewArkTS": 5536067750,
-        "PreviewBuild": 162333
+        "ConfigureCmake": 145250,
+        "PreCheckSyscap": 156917,
+        "GeneratePkgContextInfo": 329500,
+        "ProcessIntegratedHsp": 804375,
+        "BuildNativeWithCmake": 101500,
+        "SyscapTransform": 1138583,
+        "BuildNativeWithNinja": 592625,
+        "BuildJS": 2131250,
+        "CompileArkTS": 747601334,
+        "PackageHap": 324760416,
+        "SignHap": 766833,
+        "assembleHap": 109750
       }
     },
-    "TOTAL_TIME": 5807580750,
-    "BUILD_ID": "202412151626046580"
+    "TOTAL_TIME": 1332729709,
+    "BUILD_ID": "202412191727187120"
   }
 }

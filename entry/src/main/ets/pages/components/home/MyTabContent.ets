@@ -1,13 +1,17 @@
 import { RecVideoItemModel } from "../../../models/RecVideoItem";
 import VideoHttp from "../../services/home";
-import { JSON } from "@kit.ArkTS";
 import { promptAction } from '@kit.ArkUI';
 import { RecVideoSource } from "./MyTabLazy";
+import { OfflinePage } from "../OffLinePage";
 
+@Reusable
 @Component
 export struct MyTabContent {
+  @State isShow: boolean = false;
+  private scroller: Scroller = new Scroller()
   @Prop flagIndex: number
-  @State recVideos = new RecVideoSource()
+  @State egLanes: LengthConstrain = { minLength: 150, maxLength: 300 }
+  @State recVideos: RecVideoSource = new RecVideoSource()
   @State currentBp: string = 'unknown';
   @State isLoading: boolean = false
   @State isWaitingForLoading: boolean = true
@@ -755,85 +759,107 @@ export struct MyTabContent {
   ];
 
   // 生命周期函数
-  async aboutToAppear() {
-    // switch (this.flagIndex) {
-    //   case 0:
-    //     // 直播tab
-    //     break
-    //   case 1:
-    //     // 推荐tab
-    //     let rest = await VideoHttp.getRcmdVideoList(20, 1)
-    //     this.recVideos = rest
-    //     break
-    //   case 2:
-    //     // 热门tab
-    //     break
-    //   case 3:
-    //     // 番剧tab
-    //     break
-    //
-    // }
+  aboutToAppear() {
+    switch (this.flagIndex) {
+      case 0:
+        // 直播tab
+        break
+      case 1:
+        // 推荐tab
+        VideoHttp.getRcmdVideoList(20, 1).then(res => {
+          this.recVideos.items = res
+          console.log('MyTabContent--request')
+        }).catch( () => {
+          promptAction.showToast({ message: '请确保网络已连接' });
+        })
+        break
+      case 2:
+        // 热门tab
+        break
+      case 3:
+        // 番剧tab
+        break
+
+    }
     setTimeout(() => {
       this.isWaitingForLoading = false
     }, 30000)
-
-
   }
 
+  // aboutToReuse(params: Record<string, Object>): void {
+  //   this.item = params.item as string;
+  // }
+
+
   build() {
-    GridRow({ columns: 2, gutter: 10 }) {
-      if (this.isWaitingForLoading){
-        LoadingProgress()
-          .color(0xf04142)
-          .width(70)
-          .height(70)
-          .margin({top: 180})
-      }
-      ForEach(this.videoList, (item: RecVideoItemModel, index: number) => {
-        GridCol() {
-          // Row() {
-          Column({ space: 5 }) {
-            Image(item.pic)
-              .height(100)
-              .borderRadius('10%')
-
-
-            Text(item.title)
-              .fontSize(14)
-              .maxLines(2)
-              .constraintSize({ maxWidth: 200 })
-              .textOverflow({ overflow: TextOverflow.Ellipsis })
-              .margin({ left: 10, right: 10 })
-            Row() {
-              if (item.is_followed) {
-                Text('已关注')
-                  .backgroundColor('#cef2d3')
-                  .fontColor('#6fa881')
-                  .fontSize(12)
-              }
-              Text(item.owner.name)
-                .fontColor('#c2c8c2')
-                .fontSize(12)
-
-
-              // 三点设置按钮
-              Text('dfdsx')
-
-            }
-            .padding({ left: 10, right: 10 })
-            .width('100%')
-            .justifyContent(FlexAlign.SpaceBetween)
-          }
-          .height(170)
-          .backgroundColor('#eff4ee')
-          .borderRadius('10%')
-          .borderWidth({ bottom: 2 })
-          .borderColor({ bottom: '#dde0db' })
-
-          // }
+    Column() {
+      if (this.recVideos.totalCount() == 0) {
+        if (this.isWaitingForLoading) {
+          LoadingProgress()
+            .color(0xf04142)
+            .width(70)
+            .height(70)
+            .margin({ top: 180 })
+        } else {
+          OfflinePage({ isShow: this.isShow })
         }
-      })
-    }
-    .borderRadius('50%')
+      } else {
+        List({ space: 8, scroller: this.scroller }) {
+          LazyForEach(this.recVideos, (item: RecVideoItemModel, index: number) => {
+            ListItem() {
+              Column({ space: 5 }) {
+                Image(item.pic)
+                  .height(100)// .width('100vp')
+                  .borderRadius(8)
+                Text(item.title)
+                  .fontSize(14)
+                  .maxLines(2)
+                  .constraintSize({ maxWidth: 200 })
+                  .textOverflow({ overflow: TextOverflow.Ellipsis })
+                  .margin({ left: 10, right: 10 })
+                Row() {
+                  if (item.is_followed) {
+                    Text('已关注')
+                      .backgroundColor('#cef2d3')
+                      .fontColor('#6fa881')
+                      .fontSize(12)
+                  }
+                  Text(item.owner.name)
+                    .fontColor('#ff9aa09b')
+                    .fontSize(12)
+                  // 三点设置按钮
+                  Image($r("app.media.more"))
+                    .width(13)
+                    .height(16)
+                }
+                .padding({ left: 10, right: 10, bottom: 10 })
+                .width('100%')
+                .justifyContent(FlexAlign.SpaceBetween)
+              }
+              .backgroundColor('#eff4ee')
+              .borderRadius('8%')
+              .borderWidth({ bottom: 2 })
+              .borderColor({ bottom: '#dde0db' })
+            }
+          }, (item: string) => item)
+        }
+        // 设置列数，列间距
+        .lanes(this.egLanes, 10)
+        .scrollBar(BarState.Off)
+        .cachedCount(20)
+        .onScrollIndex(async (first: number, last: number) => {
+          let total: number = this.recVideos.totalCount() - 2
+          if (last > total) {
+            try {
+              const res = await VideoHttp.getRcmdVideoList(20, last)
+              console.log('刷新列表数据------>')
+              this.recVideos.addBatchData(res)
+            } catch (e) {
+              promptAction.showToast({ message: '请确保网络已连接' });
+            }
+          }
+        })
+      }
+    }.height('100%')
   }
 }
