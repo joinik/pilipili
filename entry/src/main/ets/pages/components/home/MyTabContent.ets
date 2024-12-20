@@ -805,7 +805,7 @@ export struct MyTabContent {
         }
       } else {
         List({ space: 8, scroller: this.scroller }) {
-          LazyForEach(this.recVideos, (item: RecVideoItemModel, index: number) => {
+          LazyForEach(this.recVideos, (item: RecVideoItemModel) => {
             ListItem() {
               Column({ space: 5 }) {
                 Image(item.pic)
@@ -847,7 +847,7 @@ export struct MyTabContent {
         .lanes(this.egLanes, 10)
         .scrollBar(BarState.Off)
         .cachedCount(20)
-        .onScrollIndex(async (first: number, last: number) => {
+        .onScrollIndex(async (_first: number, last: number) => {
           let total: number = this.recVideos.totalCount() - 2
           if (last > total) {
             try {
