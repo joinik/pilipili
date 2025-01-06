@@ -1,3 +1,4 @@
+import { BangumiItemModel } from '../../../models/bangumi/BangumiList';
 import { RecVideoItemModel } from '../../../models/RecVideoItem';
 
 class BasicDataSource implements IDataSource {
@@ -57,7 +58,9 @@ class BasicDataSource implements IDataSource {
   }
 }
 
+@ObservedV2
 export class RecVideoSource extends BasicDataSource {
+  @Trace
   public items: RecVideoItemModel[] = []
 
   public totalCount(): number {
@@ -85,3 +88,32 @@ export class RecVideoSource extends BasicDataSource {
 }
 
 
+
+@ObservedV2
+export class BangumiListSource extends BasicDataSource {
+  @Trace
+  public items: BangumiItemModel[] = []
+
+  public totalCount(): number {
+    return this.items.length;
+  }
+
+  public getData(index: number): BangumiItemModel {
+    return this.items[index];
+  }
+
+  public addData(index: number, data: BangumiItemModel): void {
+    this.items.splice(index, 0, data);
+    this.notifyDataAdd(index);
+  }
+
+  public addBatchData(data: BangumiItemModel[]): void {
+    this.items = this.items.concat(data)
+    this.notifyDataAdd(this.items.length - 1);
+  }
+
+  public pushData(data: BangumiItemModel): void {
+    this.items.push(data);
+    this.notifyDataAdd(this.items.length - 1);
+  }
+}

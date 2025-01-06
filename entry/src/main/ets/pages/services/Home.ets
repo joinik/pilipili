@@ -1,6 +1,6 @@
 import type { RecVideoItemModel } from '../../models/RecVideoItem';
-import Api from '../common/api'
-import { httpC } from '../utils/http';
+import Api from '../common/Api'
+import { httpC } from '../utils/Http';
 import { http } from '@kit.NetworkKit';
 
 interface GetRcmdVideoListParams {
@@ -17,17 +17,17 @@ interface GeneratedTypeLiteralInterface_1 {
   item: Array<RecVideoItemModel>;
 }
 
-interface RcmdVideoResponse {
+interface RecmdVideoResponse {
   code: number,
   message: string,
-  ttl: number,
-  data: GeneratedTypeLiteralInterface_1;
+  ttl?: number,
+  data?: GeneratedTypeLiteralInterface_1;
 }
 
 
 export default class VideoHttp {
   // 首页推荐视频
-  static async getRcmdVideoList(ps: number, freshIdx: number = 1): Promise<RecVideoItemModel[]> {
+  static async getRcmdVideoList(freshIdx: number = 1, ps: number = 20):Promise<RecmdVideoResponse>{
     const params: GetRcmdVideoListParams = {
       version: 1,
       feed_version: 'V8',
@@ -39,18 +39,18 @@ export default class VideoHttp {
     };
 
     try {
-      let resp = await httpC.get(Api.recommendListWeb, params)
-      if (resp) {
-        let resultStr = `${resp.result}`;
-        let result: RcmdVideoResponse = JSON.parse(resultStr);
+      let resp: http.HttpResponse = await httpC.get(Api.recommendListWeb, params)
+      let result = resp.result as RecmdVideoResponse
+      if (result.code === 0 && result.data?.item){
         // 过滤掉live与ad，以及拉黑用户
-        return result.data.item.filter(item => item.goto === 'av' && item.owner !== null);
+        result.data.item = result.data.item.filter(item => item.goto === 'av' && item.owner !== null);
+        return result
       } else {
-        throw new Error('Unexpected response type');
+        return result
       }
-    }catch (e){
+    } catch (e) {
       console.error("首页推荐，解析失败", e)
-      return []
+      return e
     }
 
   }

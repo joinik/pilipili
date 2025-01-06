@@ -1,4 +1,3 @@
-@Preview
 @Component
 export struct OfflinePage {
   @Link isShow: boolean

@@ -1,5 +1,5 @@
 
-import {HttpString} from './constants'
+import {HttpString} from './Constants'
 
 export default class Api {
   // 推荐视频
@@ -181,7 +181,26 @@ export default class Api {
   static readonly bangumiDel = '/pgc/web/follow/del';
 
   // 番剧列表
-  static readonly bangumiList = '/pgc/season/index/result?st=1&order=3&season_version=-1&spoken_language_type=-1&area=-1&is_finish=-1&copyright=-1&season_status=-1&season_month=-1&year=-1&style_id=-1&sort=0&season_type=1&pagesize=20&type=1';
+  // https://api.bilibili.com/pgc/season/index/result?
+  // st=1&
+  // order=3
+  // season_version=-1  全部-1 正片1 电影2 其他3
+  // spoken_language_type=-1  全部-1 原生1 中文配音2
+  // area=-1&
+  // is_finish=-1&
+  // copyright=-1&
+  // season_status=-1&
+  // season_month=-1&
+  // year=-1&
+  // style_id=-1&
+  // sort=0&
+  // page=1&
+  // season_type=1&
+  // pagesize=20&
+  // type=1
+
+  static readonly bangumiList = '/pgc/season/index/result';
+  // static readonly bangumiList = '/pgc/season/index/result?st=1&order=3&season_version=-1&spoken_language_type=-1&area=-1&is_finish=-1&copyright=-1&season_status=-1&season_month=-1&year=-1&style_id=-1&sort=0&season_type=1&pagesize=20&type=1';
 
   // 我的订阅
   static readonly bangumiFollow = '/x/space/bangumi/follow/list?type=1&follow_status=0&pn=1&ps=15&ts=1691544359969';

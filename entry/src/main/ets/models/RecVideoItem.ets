@@ -5,10 +5,10 @@ interface GeneratedTypeLiteralInterface_1 {
 }
 
 interface StatObject {
-  view: number,
-  like: number,
-  danmaku: number,
-  vt: number
+  view: number;
+  like: number;
+  danmaku: number;
+  vt: number;
 }
 
 export interface RecVideoItemModel {
@@ -22,17 +22,17 @@ export interface RecVideoItemModel {
   title: string,
   duration: number,
   pubdate: number,
-  owner: GeneratedTypeLiteralInterface_1,
-  stat: StatObject,
+  owner: GeneratedTypeLiteralInterface_1 | null,
+  stat: StatObject | null,
   is_followed: number,
-  rcmd_reason: object | null,
+  rcmd_reason?: object | null | undefined,
   av_feature: object | null,
   show_info: number,
   track_id: string,
   pos: number,
-  room_info: null,
+  room_info: null | object,
   ogv_info: null,
-  business_info: null,
+  business_info: null | object,
   is_stock: number,
   enable_vt: number,
   vt_display: number | string,

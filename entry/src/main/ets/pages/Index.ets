@@ -4,9 +4,9 @@ import Personal from './Personal';
 import Trend from './Trend';
 
 @Entry
-@Component
+@ComponentV2
 struct Index {
-  @State currentIndex: number = 0;
+  @Local currentIndex: number = 0;
   @Builder
   TabBuilder(image: string, activeImage: string, text: string| Resource, index: number) {
     Column() {

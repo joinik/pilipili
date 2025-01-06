@@ -1,5 +1,5 @@
 import { describe, beforeAll, beforeEach, afterEach, afterAll, it, expect, MockKit, when } from '@ohos/hypium'
-import VideoHttp from '../../../main/ets/pages/services/home'
+import VideoHttp from '../../../main/ets/pages/services/Home'
 
 export default function MyTabContentTest() {
   describe('MyTabContentTest', () => {

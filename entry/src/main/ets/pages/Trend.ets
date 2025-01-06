@@ -1,6 +1,6 @@
-@Component
+@ComponentV2
 export default struct Trend {
-  @State message: string = '动态';
+  @Local message: string = '动态';
 
   build() {
     RelativeContainer() {

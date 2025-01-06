@@ -1,4 +1,4 @@
-@Component
+@ComponentV2
 export default struct Personal {
   build() {
     Row(){
