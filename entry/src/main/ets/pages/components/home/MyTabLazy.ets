@@ -1,14 +1,14 @@
 import { BangumiItemModel } from '../../../models/bangumi/BangumiList';
-import { RecVideoItemModel } from '../../../models/RecVideoItem';
-
+import { HotVideoItem } from '../../../models/HotVideoItem';
+import { LiveItemModel } from '../../../models/LiveItem';
+import { RcmdVideoItemModel } from '../../../models/RecVideoItem';
 class BasicDataSource implements IDataSource {
   public listeners: DataChangeListener[] = [];
-
-  public totalCount(): number {
+  totalCount(): number {
     return 0;
   }
 
-  public getData(index: number): Object {
+  getData(index: number): Object {
     return Object;
   }
 
@@ -59,36 +59,92 @@ class BasicDataSource implements IDataSource {
 }
 
 @ObservedV2
-export class RecVideoSource extends BasicDataSource {
+export class HotVideoSource extends BasicDataSource {
   @Trace
-  public items: RecVideoItemModel[] = []
+  public items: HotVideoItem[] = []
 
   public totalCount(): number {
     return this.items.length;
   }
 
-  public getData(index: number): RecVideoItemModel {
+  public getData(index: number): HotVideoItem {
     return this.items[index];
   }
 
-  public addData(index: number, data: RecVideoItemModel): void {
+  public addData(index: number, data: HotVideoItem): void {
     this.items.splice(index, 0, data);
     this.notifyDataAdd(index);
   }
 
-  public addBatchData(data: RecVideoItemModel[]): void {
+  public addBatchData(data: HotVideoItem[]): void {
     this.items = this.items.concat(data)
     this.notifyDataAdd(this.items.length - 1);
   }
 
-  public pushData(data: RecVideoItemModel): void {
+  public pushData(data: HotVideoItem): void {
     this.items.push(data);
     this.notifyDataAdd(this.items.length - 1);
   }
 }
 
 
+@ObservedV2
+export class RcmdVideoSource extends BasicDataSource {
+  @Trace
+  public items: RcmdVideoItemModel[] = []
 
+  public totalCount(): number {
+    return this.items.length;
+  }
+
+  public getData(index: number): RcmdVideoItemModel {
+    return this.items[index];
+  }
+
+  public addData(index: number, data: RcmdVideoItemModel): void {
+    this.items.splice(index, 0, data);
+    this.notifyDataAdd(index);
+  }
+
+  public addBatchData(data: RcmdVideoItemModel[]): void {
+    this.items = this.items.concat(data)
+    this.notifyDataAdd(this.items.length - 1);
+  }
+
+  public pushData(data: RcmdVideoItemModel): void {
+    this.items.push(data);
+    this.notifyDataAdd(this.items.length - 1);
+  }
+}
+
+@ObservedV2
+export class LiveListSource extends BasicDataSource {
+  @Trace
+  public items: LiveItemModel[] = []
+
+  public totalCount(): number {
+    return this.items.length;
+  }
+
+  public getData(index: number): LiveItemModel {
+    return this.items[index];
+  }
+
+  public addData(index: number, data: LiveItemModel): void {
+    this.items.splice(index, 0, data);
+    this.notifyDataAdd(index);
+  }
+
+  public addBatchData(data: LiveItemModel[]): void {
+    this.items = this.items.concat(data)
+    this.notifyDataAdd(this.items.length - 1);
+  }
+
+  public pushData(data: LiveItemModel): void {
+    this.items.push(data);
+    this.notifyDataAdd(this.items.length - 1);
+  }
+}
 @ObservedV2
 export class BangumiListSource extends BasicDataSource {
   @Trace

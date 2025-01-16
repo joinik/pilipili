@@ -3,7 +3,7 @@ export default struct Trend {
   @Local message: string = '动态';
 
   build() {
-    RelativeContainer() {
+    NavDestination() {
       Text(this.message)
         .id('TrendHelloWorld')
         .fontSize(50)
