@@ -1,14 +1,16 @@
 import { JSON } from '@kit.ArkTS';
-import { HttpString } from '../common/Constants';
+import { domainTag, HttpString } from '../common/Constants';
 import { http } from '@kit.NetworkKit';
 import LoginUtils from './login';
+import { CookieManager } from './cookie';
+import { hilog } from '@kit.PerformanceAnalysisKit';
 
 
-interface RequestParam {
+export interface RequestParam {
   url: string;
   method?: http.RequestMethod;
-  extraData?: object;
-  headerUa?: string;
+  extraData: object | null;
+  headerUa: Header | null;
 }
 
 
@@ -25,7 +27,7 @@ function generateSimpleUUID() {
 }
 
 
-class Header {
+export class Header {
   public contentType: string;
   public headerUa: string;
   public referer: string = "https://www.bilibili.com";
@@ -56,16 +58,17 @@ export default class HttpClient {
   // 请求拦截器
   private requestInterceptor(params: RequestParam) {
     const httpClient = http.createHttp();
-    const header: Headers = params.headerUa ? new Header(params.headerUa).toRequestHeader() : {
+    const header: Headers = params.headerUa ? new Header(params.headerUa.headerUa).toRequestHeader() : {
       'Content-Type': 'application/json'
     }
+    // hilog.info(domainTag, 'requestInterceptor', JSON.stringify(params))
     const resp = httpClient.request(params.url, {
       // 默认为 GET
       method: params.method ?? http.RequestMethod.GET,
       // 默认返回类型为 object 类型
       expectDataType: http.HttpDataType.OBJECT,
-      extraData: params.extraData ?? null,
-      header: header
+      extraData: params.extraData,
+      header: header,
     });
     return [httpClient, resp]
   }
@@ -77,6 +80,8 @@ export default class HttpClient {
       if (Number(value.responseCode) == 200) {
         // 终止请求
         request.destroy()
+        let cookieManager = CookieManager.getInstance()
+        cookieManager.saveCookiesFromResponse(HttpString.baseUrl, value)
         return value;
       } else {
         console.error('responseInterError', JSON.stringify(value))
@@ -85,44 +90,47 @@ export default class HttpClient {
         return value;
       }
     }).catch((err: Error) => {
-      console.error('httpError', JSON.stringify(err))
+      console.error('httpError', JSON.stringify(err.message))
       // 终止请求
       request.destroy()
       throw err;
     });
   }
 
-
-  get(url: string, params: object | null, headerUa: string = '', baseurl: boolean = true): Promise<http.HttpResponse> {
+  /**
+   * get请求
+   * @param params:RequestParam
+   * @param baseurl:boolean 是否使用baseurl
+   * @returns Promise<http.HttpResponse>
+   */
+  get(params: RequestParam, baseurl: boolean = true): Promise<http.HttpResponse> {
     let queryString = ''
-    if (params) {
-      queryString = Object.keys(params)
-        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
-        .join('&');
+    if (params.extraData) {
+      queryString = Object.entries(params.extraData)
+        .map((entry: [string, string|number]) =>
+        `${encodeURIComponent(entry[0])}=${encodeURIComponent(entry[1])}`
+        )
+        .join('&').trim();
     }
     let fullUrl: string = '';
     if (baseurl) {
-      fullUrl = queryString ? `${HttpString.apiBaseUrl}${url}?${queryString}` : `${HttpString.apiBaseUrl}${url}`
+      fullUrl = queryString ? `${HttpString.apiBaseUrl}${params.url}?${queryString}` : `${HttpString.apiBaseUrl}${params.url}`
     } else {
-      fullUrl = queryString ? `${url}?${queryString}` : `${url}`
+      fullUrl = queryString ? `${params.url}?${queryString}` : `${params.url}`
     }
 
 
-    console.log("fullUrl", fullUrl)
+    // hilog.info(domainTag, "fullUrl", JSON.stringify(fullUrl))
     const rest = this.requestInterceptor({
-      url: fullUrl, headerUa: headerUa
+      url: fullUrl, headerUa: params.headerUa,extraData: null
     });
     const r1 = rest[0] as http.HttpRequest
     const r2 = rest[1] as Promise<http.HttpResponse>
     return this.responseInterceptor(r1, r2);
   }
 
-  post(url: string, data: object, headerUa: string = '', baseurl: boolean = true): Promise<http.HttpResponse> {
-    const rest = this.requestInterceptor({
-      url: url,
-      method: http.RequestMethod.POST,
-      extraData: data,
-    });
+  post(params: RequestParam, baseurl: boolean = true): Promise<http.HttpResponse> {
+    const rest = this.requestInterceptor(params);
     const r1 = rest[0] as http.HttpRequest
     const r2 = rest[1] as Promise<http.HttpResponse>
     return this.responseInterceptor(r1, r2);

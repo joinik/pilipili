@@ -46,6 +46,7 @@
         "name": "ohos.permission.GET_NETWORK_INFO",
 //        "reason": $string:"用于获取数据网络信息"
       }
-    ]
+    ],
+    "routerMap": "$profile:route_map",
   }
 }

@@ -19,7 +19,7 @@ export class LiveHttp {
         'page_size': ps,
         'platform': 'web'
       }
-      const resp: http.HttpResponse = await httpC.get(Api.liveList, param, '', false)
+      const resp: http.HttpResponse = await httpC.get({url:Api.liveList, headerUa:null, extraData: param},false)
       let result:VideoResponse<DataLiveList> = {
         code: 1,
         message: '获取直播列表失败',

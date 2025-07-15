@@ -25,32 +25,35 @@ export default struct Home {
   }
 
   build() {
-    Column() {
-      // 搜索框
-      SearchCP()
-      // tab页组件
-      Tabs() {
-        TabContent() {
-          MyTabContent({ flagIndex: this.currentIndex })
-        }.tabBar(this.TabBuilder('直播', 0))
+    NavDestination() {
+      Column() {
+        // 搜索框
+        SearchCP()
+        // tab页组件
+        Tabs() {
+          TabContent() {
+            MyTabContent({ flagIndex: this.currentIndex })
+          }.tabBar(this.TabBuilder('直播', 0))
 
-        TabContent() {
-          MyTabContent({ flagIndex: this.currentIndex })
+          TabContent() {
+            MyTabContent({ flagIndex: this.currentIndex })
 
-        }.tabBar(this.TabBuilder('推荐', 1))
+          }.tabBar(this.TabBuilder('推荐', 1))
 
-        TabContent() {
-          MyTabContent({ flagIndex: this.currentIndex})
+          TabContent() {
+            MyTabContent({ flagIndex: this.currentIndex })
 
-        }.tabBar(this.TabBuilder('热门', 2))
+          }.tabBar(this.TabBuilder('热门', 2))
 
-        TabContent() {
-          MyTabContent({ flagIndex: this.currentIndex })
-        }.tabBar(this.TabBuilder('番剧', 3))
+          TabContent() {
+            MyTabContent({ flagIndex: this.currentIndex })
+          }.tabBar(this.TabBuilder('番剧', 3))
+        }
+        .onChange((val) => {
+          this.currentIndex = val
+        })
       }
-      .onChange((val) => {
-        this.currentIndex = val
-      })
     }
+
   }
 }

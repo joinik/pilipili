@@ -241,7 +241,7 @@ export struct MyTabContent {
               LazyForEach(this.hotList, (item: HotVideoItem) => {
                 ListItem() {
                   // MyHot(new Args(item, this.md))
-                  MyHot({item:item, modifier:this.myTextModifier})
+                  MyHot({ item: item, modifier: this.myTextModifier })
                 }
               }, (item: string) => item)
             }
@@ -417,14 +417,14 @@ function MyHot(arg0: Args<HotVideoItem>) {
           .margin({ top: 5 })
           .fs10Gray()
         Text(arg0.item.owner.name)
-          // .fs10Gray()
+        // .fs10Gray()
           .attributeModifier(arg0.modifier)
 
 
         Flex() {
           // 播放数
           Text($r('app.media.play_circle_fill'))
-          .fs10Gray()
+            .fs10Gray()
 
           Text(viewTranslate(arg0.item.stat.view))
             .fs10Gray()

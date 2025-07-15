@@ -1,0 +1,13 @@
+
+{
+  "routerMap": [
+    {
+      "name": "pageLogin",
+      "pageSourceFile": "src/main/ets/pages/pageLogin.ets",
+      "buildFunction": "LoginPageBuilder",
+      "data": {
+        "description": "this is pageLogin"
+      }
+    }
+  ]
+}

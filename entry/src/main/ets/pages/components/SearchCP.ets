@@ -1,14 +1,7 @@
-import { ComponentContent, PromptAction, router } from "@kit.ArkUI";
+import { AppStorageV2, ComponentContent, PromptAction} from "@kit.ArkUI";
 import { BusinessError } from "@kit.BasicServicesKit";
-import { LoginPage } from "../LoginPage";
-
-
-@Builder
-function pathMap(name: string) {
-  if (name == 'LoginPage') {
-    LoginPage()
-  }
-}
+import { LoginPage } from "../pageLogin";
+import { hilog } from "@kit.PerformanceAnalysisKit";
 
 
 // 头像dialog
@@ -34,11 +27,6 @@ function buildHeadDialog(closeDialog:Function) {
         .width(100)
         .borderRadius(50)
         .onClick(() => {
-          console.log('点击头像')
-          router.pushUrl({
-            url: 'pages/LoginPage',
-            params:null
-          })
           closeDialog()
         })
       Row({ space: 5 }) {
@@ -53,6 +41,9 @@ function buildHeadDialog(closeDialog:Function) {
       Column() {
         Text('-')
         Text('动态')
+          .onClick(() => {
+            closeDialog()
+          })
       }
 
       Column() {
@@ -74,19 +65,29 @@ function buildHeadDialog(closeDialog:Function) {
 
 @ComponentV2
 export default struct SearchCP {
+
+  // 子页面中获取全局的NavPathStack
+  pathStack: NavPathStack =  AppStorageV2.connect(NavPathStack, 'navPathStack', ()=> new NavPathStack()) as NavPathStack
+
+  /**
+   * 关闭头部弹窗
+   */
+  closeHeadDialog: Function = () => {
+    // 跳转到login页面
+    this.pathStack.pushPath({name:'pageLogin'})
+    this.promptAction.closeCustomDialog(this.contentNode).then(() => {
+      console.info('CloseCustomDialog complete.');
+      if (this.contentNode !== null) {
+        // this.contentNode.dispose();   // 释放contentNode
+      }
+    });
+  }
   private ctx: UIContext = this.getUIContext();
   promptAction: PromptAction = this.getUIContext().getPromptAction()
-  contentNode: ComponentContent<Function> |null = null;
-
-
-  closeDialog: Function = () => {
-    if (this.contentNode == null) {
-      return;
-    }
-    this.promptAction.closeCustomDialog(this.contentNode);
-  }
+  @Local contentNode: ComponentContent<Function> = new ComponentContent(this.ctx, wrapBuilder(buildHeadDialog), this.closeHeadDialog);
 
   aboutToAppear(): void {
+
   }
 
   build() {
@@ -108,20 +109,18 @@ export default struct SearchCP {
         // 用户头像
         Image($r("app.media.head")).width(30)
           .onClick(() => {
-            this.contentNode =
-              new ComponentContent(this.ctx, wrapBuilder(buildHeadDialog), this.closeDialog);
+            hilog.info(0xff00, "LoginPage", "onClick")
             try {
-              this.promptAction.openCustomDialog(this.contentNode);
-              this.promptAction.updateCustomDialog(this.contentNode, {
-                offset: { dx: 0, dy: 260 },
-
-              })
+              if (this.contentNode == null){
+                hilog.info(0xff00, "LoginPage", "contentNode Null")
+                this.contentNode = new ComponentContent(this.ctx, wrapBuilder(buildHeadDialog), this.closeHeadDialog);
+              }
+              this.promptAction.openCustomDialog(this.contentNode, { offset: { dx: 0, dy: 260 }});
             } catch (error) {
               let message = (error as BusinessError).message;
               let code = (error as BusinessError).code;
               console.error(`OpenCustomDialog args error code is ${code}, message is ${message}`);
-            }
-            ;
+            };
           })
       }.width("100%")
     // }

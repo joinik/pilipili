@@ -1,6 +1,7 @@
 import { AbilityConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
+import { UtilsPili } from '../pages/utils/utils';
 
 export default class EntryAbility extends UIAbility {
   para: Record<string, number | Object> = {
@@ -10,6 +11,8 @@ export default class EntryAbility extends UIAbility {
 
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onCreate');
+    // 注入uiAbility
+    UtilsPili.init(this.context)
   }
 
   onDestroy(): void {
@@ -19,6 +22,7 @@ export default class EntryAbility extends UIAbility {
   onWindowStageCreate(windowStage: window.WindowStage): void {
     // Main window is created, set main page for this ability
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onWindowStageCreate');
+
 
     windowStage.loadContent('pages/Index', this.storage, (err) => {
       if (err.code) {

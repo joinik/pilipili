@@ -21,6 +21,7 @@ const AppKey: GeneratedObjectLiteralInterface_1 = {
 
 
 }
+export const domainTag = 0xff00;
 
 export class HttpString {
   static readonly baseUrl: string = 'https://www.bilibili.com';

@@ -1,6 +1,6 @@
 import type { RcmdVideoItemModel } from '../../models/RecVideoItem';
 import Api from '../common/Api'
-import { httpC } from '../utils/Http';
+import { Header, httpC } from '../utils/Http';
 import { http } from '@kit.NetworkKit';
 import { HotVideoItem } from '../../models/HotVideoItem';
 import json from '@ohos.util.json';
@@ -31,8 +31,8 @@ export default class VideoHttp {
       const params: Record<string, number> = {
         'pn': pn, 'ps': ps
       }
-      const resp: http.HttpResponse = await httpC.get(Api.hotList, params,
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.58')
+      const resp: http.HttpResponse = await httpC.get({url:Api.hotList, extraData:params,headerUa:new Header(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.58')})
       const result = resp.result as VideoResponse<DataHotVideoList>
       if (result.code === 0 && (result.data as DataHotVideoList).list) {
         let ownSet = new Set<number>();
@@ -64,7 +64,8 @@ export default class VideoHttp {
     };
 
     try {
-      let resp: http.HttpResponse = await httpC.get(Api.recommendListWeb, params)
+      let resp: http.HttpResponse = await httpC.get({url:Api.recommendListWeb, extraData:params,headerUa:null})
+      // let resp: http.HttpResponse = await httpC.get1(Api.recommendListWeb, params)
       let result = resp.result as VideoResponse<DataRcmdVideoList>
       if (result.code === 0 && (result.data as DataRcmdVideoList).item) {
         // 过滤掉live与ad，以及拉黑用户

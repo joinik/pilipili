@@ -48,7 +48,7 @@ export class BangumiHttp {
       "page":page
     }
     try {
-      const resp = await httpC.get(Api.bangumiList, params)
+      const resp = await httpC.get({url:Api.bangumiList, extraData:params, headerUa:null})
       const result = resp.result as BangunmiResponse
       return result
     } catch (e) {
